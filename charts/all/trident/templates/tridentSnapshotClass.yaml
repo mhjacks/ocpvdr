@@ -1,7 +1,10 @@
-# cat snapshot-class.yaml
+{{- with .Values.tridentFSX }}
+{{- if and .iscsi.mgmtLIF (not (contains "PROVIDE" .iscsi.mgmtLIF)) }}
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: trident-snapshotclass
 driver: csi.trident.netapp.io
 deletionPolicy: Retain
+{{- end }}
+{{- end }}

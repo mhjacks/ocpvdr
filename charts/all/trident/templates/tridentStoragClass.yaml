@@ -1,4 +1,5 @@
 {{- with .Values.tridentFSX }}
+{{- if and .iscsi.mgmtLIF (not (contains "PROVIDE" .iscsi.mgmtLIF)) }}
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -11,4 +12,5 @@ parameters:
 allowVolumeExpansion: {{ default true .storageClass.allowVolumeExpansion }}
 volumeBindingMode: {{ default "Immediate" .storageClass.volumeBindingMode }}
 reclaimPolicy: {{ default "Delete" .storageClass.reclaimPolicy }}
+{{- end }}
 {{- end }}

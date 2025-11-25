@@ -1,4 +1,5 @@
 {{- with .Values.tridentFSX }}
+{{- if and .iscsi.mgmtLIF (not (contains "PROVIDE" .iscsi.mgmtLIF)) }}
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
@@ -18,4 +19,5 @@ spec:
   storageDriverName: {{ .iscsi.storageDriverName }}
   svm: {{ .iscsi.svm }}
   version: 1
+{{- end }}
 {{- end }}
