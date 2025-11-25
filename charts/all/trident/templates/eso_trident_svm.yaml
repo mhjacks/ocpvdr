@@ -13,6 +13,12 @@ spec:
   target:
     name: {{ .iscsi.secretName }}
     creationPolicy: Owner
+    template:
+      type: Opaque
+      mergePolicy: Merge
+      data:
+        password: |-
+          {{ "{{ .password | trim }}" }}
   data:
     - secretKey: username
       remoteRef:
