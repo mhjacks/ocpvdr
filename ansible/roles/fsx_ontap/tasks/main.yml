@@ -81,6 +81,25 @@
     lookup_subnet_1: "{{ (subnet_1_id is not defined or subnet_1_id == '' or subnet_1_id == 'subnet-xxxxxxxxxxxxxxxxx' or not (subnet_1_id | regex_search('^subnet-'))) and (subnet_1_name != '' or subnet_1_tag != '') }}"
     lookup_subnet_2: "{{ (subnet_2_id is not defined or subnet_2_id == '' or subnet_2_id == 'subnet-xxxxxxxxxxxxxxxxx' or not (subnet_2_id | regex_search('^subnet-'))) and (subnet_2_name != '' or subnet_2_tag != '') }}"
 
+- name: Look up subnets by private tag
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:sigs.k8s.io/cluster-api-provider-aws/role": private
+  register: subnets_private_lookup
+  when: lookup_subnet_1 | default(false)
+
+- name: Set subnet IDs from private tag lookup
+  set_fact:
+    subnet_1_id: "{{ subnets_private_lookup.subnets[0].id }}"
+    subnet_2_id: "{{ subnets_private_lookup.subnets[1].id }}"
+    subnet_1_found_by_name: true
+    subnet_2_found_by_name: true
+  when: >
+    subnets_private_lookup.subnets | length >= 2 and
+    lookup_subnet_1 | default(false)
+
 - name: Look up subnet 1 ID by name
   amazon.aws.ec2_vpc_subnet_info:
     region: "{{ aws_region }}"

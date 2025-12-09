@@ -4,15 +4,16 @@
 
 include Makefile-common
 
-REGION ?=
-CLUSTER ?=
+REGION ?= $(shell oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null)
+CLUSTER ?= $(shell oc get infrastructure cluster -o jsonpath='{.status.infrastructureName}' 2>/dev/null)
+EXTRA_PLAYBOOK_OPTS ?=
 
 ##@ FSx Tasks
 
 .PHONY: build-fsx
 build-fsx: ## Create FSx ONTAP filesystem (requires REGION and CLUSTER variables)
-	ansible-playbook ansible/site.yaml -e aws_region=$(REGION) -e cluster_name=$(CLUSTER) -e @ansible/fsx-ontap-vars.yml
+	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e aws_region=$(REGION) -e cluster_name=$(CLUSTER) -e @ansible/fsx-ontap-vars.yml
 
 .PHONY: destroy-fsx
 destroy-fsx: ## Delete FSx ONTAP resources (requires REGION and CLUSTER variables)
-	ansible-playbook ansible/site.yaml -e aws_region=$(REGION) -e cluster_name=$(CLUSTER) -e @ansible/fsx-ontap-vars.yml -e delete_resources=true
+	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e aws_region=$(REGION) -e cluster_name=$(CLUSTER) -e @ansible/fsx-ontap-vars.yml -e delete_resources=true
