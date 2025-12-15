@@ -569,9 +569,6 @@
   environment:
     AWS_DEFAULT_REGION: "{{ aws_region }}"
 
-- name: End play - remove me
-  ansible.builtin.meta: end_play
-
 - name: Create FSx for ONTAP file system
   ansible.builtin.shell: '{{ fsx_create_command }}'
   register: fsx_create_result
