@@ -540,31 +540,40 @@
       - "  Will create new filesystem: {{ (existing_fsx_id | default('')) == '' }}"
       - "  Will skip creation: {{ (existing_fsx_id | default('')) != '' }}"
 
+- name: Define FSx create command
+  ansible.builtin.set_fact:
+    fsx_create_command: |
+      aws fsx create-file-system \
+      --region {{ aws_region }} \
+      --file-system-type ONTAP \
+      --storage-capacity {{ storage_capacity }} \
+      --storage-type {{ storage_type }} \
+      --subnet-ids {{ subnet_1_id }} {{ subnet_2_id }} \
+      --security-group-ids {{ security_group_id }} \
+      --ontap-configuration '{
+        "DeploymentType": "{{ deployment_type }}",
+        "PreferredSubnetId": "{{ subnet_1_id }}",
+        "RouteTableIds": {{ route_table_ids | to_json }},
+        "ThroughputCapacity": {{ throughput_capacity }},
+        "WeeklyMaintenanceStartTime": "{{ weekly_maintenance_time }}",
+        "FsxAdminPassword": "{{ fsx_admin_password }}",
+        "AutomaticBackupRetentionDays": 3,
+        "DailyAutomaticBackupStartTime": "01:00",
+        "DiskIopsConfiguration": {"Mode": "AUTOMATIC"}
+      }' \
+      --tags \
+        Key=Name,Value={{ file_system_name }} \
+        Key=Environment,Value={{ tags.Environment }} \
+        Key=ManagedBy,Value={{ tags.ManagedBy }} \
+      --output json
+  environment:
+    AWS_DEFAULT_REGION: "{{ aws_region }}"
+
+- name: End play - remove me
+  ansible.builtin.meta: end_play
+
 - name: Create FSx for ONTAP file system
-  ansible.builtin.shell: |
-    aws fsx create-file-system \
-    --region {{ aws_region }} \
-    --file-system-type ONTAP \
-    --storage-capacity {{ storage_capacity }} \
-    --storage-type {{ storage_type }} \
-    --subnet-ids {{ subnet_1_id }} {{ subnet_2_id }} \
-    --security-group-ids {{ security_group_id }} \
-    --ontap-configuration '{
-      "DeploymentType": "{{ deployment_type }}",
-      "PreferredSubnetId": "{{ subnet_1_id }}",
-      "RouteTableIds": {{ route_table_ids | to_json }},
-      "ThroughputCapacity": {{ throughput_capacity }},
-      "WeeklyMaintenanceStartTime": "{{ weekly_maintenance_time }}",
-      "FsxAdminPassword": "{{ fsx_admin_password }}",
-      "AutomaticBackupRetentionDays": 3,
-      "DailyAutomaticBackupStartTime": "01:00",
-      "DiskIopsConfiguration": {"Mode": "AUTOMATIC"}
-    }' \
-    --tags \
-      Key=Name,Value={{ file_system_name }} \
-      Key=Environment,Value={{ tags.Environment }} \
-      Key=ManagedBy,Value={{ tags.ManagedBy }} \
-    --output json
+  ansible.builtin.shell: '{{ fsx_create_command }}'
   register: fsx_create_result
   when: existing_fsx_id | default('') == ''
   environment:
