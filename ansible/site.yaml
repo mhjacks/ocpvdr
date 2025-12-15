@@ -121,6 +121,55 @@
         vpc_id_from_lookup: "{{ test_vpc_lookup.vpcs[0].vpc_id if (test_vpc_lookup.vpcs | default([]) | length > 0) else '' }}"
       when: test_vpc_lookup is defined
 
+    # This is because keys in ansible dicts generally are not interpolated
+    - name: Dynamically construct tag filter
+      set_fact:
+        subnet_tag_filters: "{{ tag_filters_list | items2dict }}"
+      vars:
+        tag_filters_list:
+          - key: "vpc-id"
+            value: "{{ vpc_id_from_lookup }}"
+          - key: "tag:sigs.k8s.io/cluster-api-provider-aws/role"
+            value: "private"
+          - key: "tag:kubernetes.io/cluster/{{ cluster_name }}"
+            value: "owned"
+          - key: "tag:sigs.k8s.io/cluster-api-provider-aws/cluster/{{ cluster_name }}"
+            value: "owned"
+
+    - name: Lookup subnets by tags to get names
+      amazon.aws.ec2_vpc_subnet_info:
+        region: "{{ aws_region }}"
+        filters: "{{ subnet_tag_filters }}"
+      register: tag_subnets
+      when:
+        - vpc_id_from_lookup is defined and vpc_id_from_lookup != ""
+        - not (is_hcp_cluster | default(false) | bool)
+
+    - name: Set name facts for discovered subnets
+      set_fact:
+        subnet_ids: "{{ (subnet_ids | default([])) + [item.id] }}"
+      loop: "{{ tag_subnets.subnets }}"
+      when:
+        - tag_subnets.subnets is defined
+
+    - name: Find route tables based on subnet query
+      amazon.aws.ec2_vpc_route_table_info:
+        region: "{{ aws_region }}"
+        filters:
+          "association.subnet-id": "{{ subnet_ids }}"
+          vpc-id: "{{ vpc_id_from_lookup }}"
+      register: queried_route_tables
+      when:
+        - vpc_id_from_lookup is defined
+        - subnet_ids is defined
+
+    - name: Set route table ids from query
+      set_fact:
+        route_table_ids: "{{ (route_table_ids | default([])) + [item.id] }}"
+      loop: "{{ queried_route_tables.route_tables }}"
+      when:
+        - queried_route_tables.route_tables is defined
+
     - name: Test subnet lookup by name (standard cluster)
       amazon.aws.ec2_vpc_subnet_info:
         region: "{{ aws_region }}"
@@ -166,6 +215,12 @@
           - "  HCP fallback (by tag): {{ 'found ' + (test_subnet_lookup_hcp_tag.subnets | default([]) | length | string) + ' subnets' if (is_hcp_cluster | default(false) | bool and test_subnet_lookup_hcp_tag is defined) else 'not checked' }}"
       when: 
         - test_subnet_1_lookup is defined or test_subnet_1_lookup_hcp is defined
+
+    - name: Display route table lookup results
+      debug:
+        msg:
+          - "Route Table Lookup Results:"
+          - "  route_table_ids: {{ route_table_ids | default('not set') }}"
 
     - name: Load values-global.yaml to get pattern name
       set_fact:
