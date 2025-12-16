@@ -10,7 +10,11 @@
     region: "{{ ocp_aws_region }}"
     filters:
       "tag:Name": "{{ ocp_vpc_name }}"
-  register: test_vpc_lookup
+  register: vpc_lookup
   when:
     - vpc_name is not defined
     - ocp_vpc_name is defined and ocp_vpc_name != ""
+
+- name: Set vpc ID
+  ansible.builtin.set_fact:
+    aws_vpc_id: "{{ vpc_lookup.vpcs[0].id }}"
