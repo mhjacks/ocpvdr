@@ -4,3 +4,6 @@
 
 - name: Discover VPC details
   ansible.builtin.include_tasks: vpc.yml
+
+- name: Discover subnet details
+  ansible.builtin.include_tasks: subnets.yml
