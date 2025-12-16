@@ -1,3 +1,6 @@
 ---
 - name: Discover cluster details
   ansible.builtin.include_tasks: cluster.yml
+
+- name: Discover VPC details
+  ansible.builtin.include_tasks: vpc.yml
