@@ -6,18 +6,30 @@
     - "{{ playbook_dir }}/fsx-ontap-vars.yml"
   tasks:
     - name: Skip creation if deletion is requested
-      meta: end_play
+      ansible.builtin.meta: end_play
       when: delete_resources | default(false)
 
     - name: Discover AWS values
       ansible.builtin.include_role:
         name: aws_ocp_discovery
 
-    - name: Display route table lookup results
-      debug:
+    - name: Display AWS and Cluster discovery results
+      ansible.builtin.debug:
         msg:
+          - "Cluster lookup results:"
+          - "  ocp_infra_name: {{ ocp_infra_name }}"
+          - "  ocp_platform: {{ ocp_platform }}"
+          - "  ocp_aws_region: {{ ocp_aws_region }}"
+          - "  ocp_app_domain: {{ ocp_app_domain }}"
+          - "  ocp_version: {{ ocp_version }}"
+          - "  ocp_base_domain: {{ ocp_base_domain }}"
+          - "  ocp_cluster_name: {{ ocp_base_domain }}"
+          - "VPC Lookup Results:"
+          - "  aws_vpc_id: {{ aws_vpc_id }}"
+          - "Subnet Lookup Results:"
+          - "  aws_vpc_private_subnet_ids: {{ aws_vpc_private_subnet_ids }}"
           - "Route Table Lookup Results:"
-          - "  route_table_ids: {{ route_table_ids | default('not set') }}"
+          - "  aws_vpc_route_table_ids: {{ aws_vpc_route_table_ids }}"
 
     - name: Load values-global.yaml to get pattern name
       ansible.builtin.set_fact:
