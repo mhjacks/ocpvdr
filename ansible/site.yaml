@@ -13,6 +13,12 @@
       ansible.builtin.include_role:
         name: aws_ocp_discovery
 
+    - name: Display route table lookup results
+      debug:
+        msg:
+          - "Route Table Lookup Results:"
+          - "  route_table_ids: {{ route_table_ids | default('not set') }}"
+
     - name: Load values-global.yaml to get pattern name
       ansible.builtin.set_fact:
         values_global_data: "{{ lookup('file', playbook_dir + '/../values-global.yaml') | from_yaml }}"
