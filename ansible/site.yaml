@@ -152,6 +152,10 @@
   hosts: localhost
   gather_facts: false
   tasks:
+    - name: Discover AWS values
+      ansible.builtin.include_role:
+        name: aws_ocp_discovery
+
     - name: Delete FSx ONTAP resources
       ansible.builtin.include_role:
         name: fsx_ontap
