@@ -286,7 +286,7 @@
 
     - name: Update tridentFSX.iscsi.mgmtLIF in values-trident.yaml
       ansible.builtin.replace:
-        path: "{{ playbook_dir }}/../values-trident.yaml"
+        path: "{{ playbook_dir }}/../overrides/values-trident.yaml"
         regexp: '^(\s{4})mgmtLIF:\s+.*'
         replace: '\1mgmtLIF: {{ svm_mgmt_dns_name }}'
       when: 
@@ -296,7 +296,7 @@
 
     - name: Update tridentFSX.iscsi.svm in values-trident.yaml
       ansible.builtin.replace:
-        path: "{{ playbook_dir }}/../values-trident.yaml"
+        path: "{{ playbook_dir }}/../overrides/values-trident.yaml"
         regexp: '^(\s{4})svm:\s+.*'
         replace: '\1svm: {{ svm_name_result }}'
       when:
