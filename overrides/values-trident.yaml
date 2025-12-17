@@ -1,4 +1,4 @@
 tridentFSX:
   iscsi:
-    mgmtLIF: "" # Example: svm-123456b09c87a9b7e.fs-12345dc123456e3f5.fsx.us-west-1.amazonaws.com
+    mgmtLIF: svm-023621c7d36278c33.fs-09ff5b7c3234e1f36.fsx.us-west-1.amazonaws.com
     svm: SVM1
