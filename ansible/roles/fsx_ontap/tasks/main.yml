@@ -206,6 +206,11 @@
       - "  Will create new filesystem: {{ (existing_fsx_id | default('')) == '' }}"
       - "  Will skip creation: {{ (existing_fsx_id | default('')) != '' }}"
 
+- name: Fail if we do not have two subnet IDs
+  ansible.builtin.fail:
+    msg: "FSx for ONTAP Multi-AZ config requires exactly two subnet IDs. We have {{ aws_vpc_private_subnet_ids }}"
+  when: aws_vpc_private_subnet_ids | length != 2
+
 - name: Create FSx for ONTAP file system
   ansible.builtin.shell: |
     aws fsx create-file-system \
