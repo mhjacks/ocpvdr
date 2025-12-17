@@ -16,3 +16,18 @@
   ansible.builtin.include_tasks: subnets.yml
   when:
     - "'subnets' in aws_ocp_discovery_query_items"
+
+- name: Discover private subnet details
+  ansible.builtin.include_tasks: private_subnets.yml
+  when:
+    - "'private_subnets' in aws_ocp_discovery_query_items"
+
+- name: Discover public subnet details
+  ansible.builtin.include_tasks: public_subnets.yml
+  when:
+    - "'public_subnets' in aws_ocp_discovery_query_items"
+
+- name: Discover route tables
+  ansible.builtin.include_tasks: rtbs.yml
+  when:
+    - "'route_tables' in aws_ocp_discovery_query_items"
