@@ -217,7 +217,7 @@
     --security-group-ids {{ security_group_id }} \
     --ontap-configuration '{
       "DeploymentType": "{{ deployment_type }}",
-      "PreferredSubnetId": "{{ aws_vpc_private_subnets_ids | first }}",
+      "PreferredSubnetId": "{{ aws_vpc_private_subnet_ids | first }}",
       "RouteTableIds": {{ aws_vpc_route_table_ids | to_json }},
       "ThroughputCapacity": {{ throughput_capacity }},
       "WeeklyMaintenanceStartTime": "{{ weekly_maintenance_time }}",
