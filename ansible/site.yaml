@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - "{{ playbook_dir }}/fsx-ontap-vars.yml"
+    - "{{ playbook_dir }}/vars/fsx-ontap-vars.yml"
   tasks:
     - name: Skip creation if deletion is requested
       ansible.builtin.meta: end_play
@@ -125,7 +125,7 @@
         path: "{{ playbook_dir }}/../overrides/values-trident.yaml"
         regexp: '^(\s{4})mgmtLIF:\s+.*'
         replace: '\1mgmtLIF: {{ svm_mgmt_dns_name }}'
-      when: 
+      when:
         - not (delete_resources | default(false))
         - svm_mgmt_dns_name is defined
         - svm_mgmt_dns_name != ""
