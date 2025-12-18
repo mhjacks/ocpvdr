@@ -9,8 +9,10 @@ exclude_paths:
   - common/
   - tests/
 
-warn_list:
+skip_list:
   - var-naming
+
+warn_list:
   - var-spacing
 
 # warn_list:
