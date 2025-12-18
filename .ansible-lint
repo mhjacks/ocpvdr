@@ -15,6 +15,9 @@ skip_list:
 warn_list:
   - var-spacing
 
+kinds:
+  - "ansible/fsx-ontap-vars.yml": vars
+
 # warn_list:
 #   - yaml
 #   - schema
