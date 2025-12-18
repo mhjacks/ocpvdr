@@ -10,8 +10,8 @@ EXTRA_PLAYBOOK_OPTS ?=
 
 .PHONY: build-fsx
 build-fsx: ## Debug VPC lookup (region auto-detected from cluster, override with REGION=us-east-1)
-	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e @ansible/fsx-ontap-vars.yml
+	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e @ansible/vars/fsx-ontap-vars.yml
 
 .PHONY: destroy-fsx
 destroy-fsx: ## Delete FSx ONTAP resources (region auto-detected from cluster, override with REGION=us-east-1)
-	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e @ansible/fsx-ontap-vars.yml -e delete_resources=true
+	ansible-playbook $(EXTRA_PLAYBOOK_OPTS) ansible/site.yaml -e @ansible/vars/fsx-ontap-vars.yml -e delete_resources=true
