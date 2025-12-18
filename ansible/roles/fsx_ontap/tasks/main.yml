@@ -278,7 +278,7 @@
     fsx_filesystem_data: "{{ (fsx_details.stdout | from_json).FileSystems[0] }}"
 
 - name: Extract FSx DNS name
-  set_fact:
+  ansible.builtin.set_fact:
     fsx_dns_name: "{{ fsx_filesystem_data.DNSName | default(fsx_filesystem_data.OntapConfiguration.Endpoints.Management.DNSName | default('N/A')) }}"
   when: fsx_filesystem_data is defined
 
@@ -312,6 +312,7 @@
     --output json
   register: svm_create_result
   when: existing_svm_id == ""
+  changed_when: true
   environment:
     AWS_DEFAULT_REGION: "{{ ocp_aws_region }}"
 
@@ -337,6 +338,7 @@
   retries: 20
   delay: 30
   when: existing_svm_id == "" and svm_create_result is defined
+  changed_when: false
 
 - name: Get SVM details
   ansible.builtin.command: >

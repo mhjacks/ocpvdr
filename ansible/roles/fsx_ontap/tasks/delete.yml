@@ -83,7 +83,7 @@
       when: fsx_to_delete_id is not defined
 
     - name: Debug FSx deletion lookup
-      debug:
+      ansible.builtin.debug:
         msg: "FSx to delete ID: {{ fsx_to_delete_id }}"
 
     - name: Lookup all SVMs for deletion
@@ -153,7 +153,7 @@
       when: svm_to_delete_id is not defined
 
     - name: Debug SVM deletion lookup
-      debug:
+      ansible.builtin.debug:
         msg: "SVM to delete ID: {{ svm_to_delete_id | default('(not found)') }}"
 
     - name: Delete Storage Virtual Machine (SVM) - MUST BE DONE BEFORE FILESYSTEM
@@ -165,6 +165,7 @@
       register: svm_delete_result
       when: svm_to_delete_id != "" and svm_to_delete_id is defined
       failed_when: false
+      changed_when: true
 
     - name: Wait for SVM to be deleted
       ansible.builtin.command: >
@@ -178,6 +179,7 @@
       retries: 20
       delay: 30
       failed_when: false
+      changed_when: false
       when: >
         svm_to_delete_id != "" and
         svm_to_delete_id is defined and
@@ -210,6 +212,7 @@
         fsx_to_delete_id != "" and
         (svm_to_delete_id == "" or svm_to_delete_id is not defined or svm_deletion_complete | default(false))
       failed_when: false
+      changed_when: true
 
     - name: Debug FSx deletion result
       ansible.builtin.debug:
@@ -235,6 +238,7 @@
       retries: 60
       delay: 30
       failed_when: false
+      changed_when: false
       when: >
         fsx_to_delete_id != "" and
         fsx_delete_result is defined
@@ -271,5 +275,5 @@
   when: should_delete | default(false)
   rescue:
     - name: Display deletion error
-      debug:
+      ansible.builtin.debug:
         msg: "An error occurred during resource deletion. Some resources may not have been deleted."
