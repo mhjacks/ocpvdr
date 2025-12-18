@@ -3,8 +3,7 @@
   ansible.builtin.set_fact:
     should_delete: "{{ delete_resources | default(false) }}"
 
-- name: FSx Deletion block
-  block:
+- block:
     - name: Lookup FSx file system by name
       ansible.builtin.command: >
         aws fsx describe-file-systems
@@ -39,8 +38,7 @@
 
     - name: Parse FSx file systems JSON for deletion
       ansible.builtin.set_fact:
-        fsx_systems_for_delete: "{{ (fsx_lookup_delete.stdout | from_json).FileSystems \\
-          | default([]) | selectattr('FileSystemType', 'equalto', 'ONTAP') | list }}"
+        fsx_systems_for_delete: "{{ (fsx_lookup_delete.stdout | from_json).FileSystems | default([]) | selectattr('FileSystemType', 'equalto', 'ONTAP') | list }}"
       when: fsx_lookup_delete.rc == 0 and fsx_lookup_delete.stdout | default('') | length > 0
       failed_when: false
 
@@ -62,11 +60,9 @@
         msg:
           - "Filesystem ID: {{ item.FileSystemId }}"
           - "Tags: {{ item.Tags | default([]) }}"
-          - "Name tag value: {{ item.Tags | default([]) \\
-              | selectattr('Key', 'equalto', 'Name') | map(attribute='Value') | list | first | default('(no Name tag)') }}"
+          - "Name tag value: {{ item.Tags | default([]) | selectattr('Key', 'equalto', 'Name') | map(attribute='Value') | list | first | default('(no Name tag)') }}"
           - "Looking for: {{ file_system_name }}"
-          - "Match: {{ 'YES' if (item.Tags | default([]) \\
-              | selectattr('Key', 'equalto', 'Name') | selectattr('Value', 'equalto', file_system_name) | list | length > 0) else 'NO' }}"
+          - "Match: {{ 'YES' if (item.Tags | default([]) | selectattr('Key', 'equalto', 'Name') | selectattr('Value', 'equalto', file_system_name) | list | length > 0) else 'NO' }}"
       loop: "{{ fsx_systems_for_delete | default([]) }}"
       when: fsx_systems_for_delete is defined
 
@@ -191,8 +187,7 @@
     - name: Check if SVM deletion is required
       ansible.builtin.set_fact:
         svm_deletion_required: "{{ svm_to_delete_id != '' and svm_to_delete_id is defined }}"
-        svm_deletion_complete: "{{ (svm_to_delete_id == '' or svm_to_delete_id is not defined) \\
-          or (svm_delete_status is defined and (svm_delete_status.rc != 0 or svm_delete_status.stdout == 'DELETED')) }}"
+        svm_deletion_complete: "{{ (svm_to_delete_id == '' or svm_to_delete_id is not defined) or (svm_delete_status is defined and (svm_delete_status.rc != 0 or svm_delete_status.stdout == 'DELETED')) }}"
 
     - name: Fail if SVM exists and wasn't deleted
       fail:
