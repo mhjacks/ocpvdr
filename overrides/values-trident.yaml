@@ -1,4 +1,4 @@
 tridentFSX:
   iscsi:
-    mgmtLIF: svm-023621c7d36278c33.fs-09ff5b7c3234e1f36.fsx.us-west-1.amazonaws.com
+    mgmtLIF: svm-013ff045411086576.fs-046a73de9cda4c09e.fsx.us-west-1.amazonaws.com
     svm: SVM1
