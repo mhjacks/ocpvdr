@@ -235,8 +235,8 @@
     }' \
     --tags \
       Key=Name,Value={{ file_system_name }} \
-      Key=Environment,Value={{ tags.Environment }} \
-      Key=ManagedBy,Value={{ tags.ManagedBy }} \
+      Key=Environment,Value={{ fsx_resource_tags.Environment }} \
+      Key=ManagedBy,Value={{ fsx_resource_tags.ManagedBy }} \
     --output json
   register: fsx_create_result
   when: existing_fsx_id | default('') == ''
@@ -386,8 +386,8 @@
     secret_type: string
     resource_tags:
       Name: "{{ file_system_name }}"
-      Environment: "{{ tags.Environment }}"
-      ManagedBy: "{{ tags.ManagedBy }}"
+      Environment: "{{ fsx_resource_tags.Environment }}"
+      ManagedBy: "{{ fsx_resource_tags.ManagedBy }}"
   register: fsx_secret
   when: >
     create_secrets | default(true) and
@@ -427,8 +427,8 @@
     secret_type: string
     resource_tags:
       Name: "{{ file_system_name }}"
-      Environment: "{{ tags.Environment }}"
-      ManagedBy: "{{ tags.ManagedBy }}"
+      Environment: "{{ fsx_resource_tags.Environment }}"
+      ManagedBy: "{{ fsx_resource_tags.ManagedBy }}"
   register: svm_secret
   when: >
     create_secrets | default(true) and
