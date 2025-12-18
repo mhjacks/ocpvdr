@@ -145,7 +145,7 @@
         cidr_ip: "{{ allowed_cidr }}"
         from_port: 11105
         to_port: 11105
-    tags: "{{ tags }}"
+    resource_tags: "{{ sg_resource_tags }}"
   register: security_group
   when: existing_sg_check.security_groups | default([]) | length == 0
 

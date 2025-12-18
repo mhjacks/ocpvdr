@@ -19,7 +19,7 @@ root_volume_security_style: "UNIX"  # UNIX, NTFS, or MIXED
 # svm_admin_password: null  # Password for vsadmin user (5-40 alphanumeric chars) - will be read from ~/.fsx
 
 # Tags
-tags:
+sg_resource_tags:
   Name: "OntapFileSystem_MAZ"
   Environment: "production"
   ManagedBy: "Ansible"
