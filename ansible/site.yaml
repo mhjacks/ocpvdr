@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - "{{ playbook_dir }}/fsx-ontap-vars.yml"
+    - "{{ playbook_dir }}/vars/fsx-ontap-vars.yml"
   tasks:
     - name: Skip creation if deletion is requested
       ansible.builtin.meta: end_play
