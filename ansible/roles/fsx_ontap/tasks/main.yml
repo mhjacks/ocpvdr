@@ -384,7 +384,7 @@
     description: "FSx Admin Password for {{ file_system_name }}"
     secret: "{\"username\":\"fsxadmin\",\"password\":\"{{ fsx_admin_password }}\"}"
     secret_type: string
-    tags:
+    resource_tags:
       Name: "{{ file_system_name }}"
       Environment: "{{ tags.Environment }}"
       ManagedBy: "{{ tags.ManagedBy }}"
@@ -425,7 +425,7 @@
     description: "SVM Admin Password for {{ file_system_name }}"
     secret: "{\"username\":\"vsadmin\",\"password\":\"{{ svm_admin_password }}\"}"
     secret_type: string
-    tags:
+    resource_tags:
       Name: "{{ file_system_name }}"
       Environment: "{{ tags.Environment }}"
       ManagedBy: "{{ tags.ManagedBy }}"
