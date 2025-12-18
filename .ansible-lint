@@ -9,6 +9,10 @@ exclude_paths:
   - common/
   - tests/
 
+warn_list:
+  - var-naming
+  - var-spacing
+
 # warn_list:
 #   - yaml
 #   - schema
