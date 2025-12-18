@@ -197,10 +197,14 @@
     - name: Check if SVM deletion is required
       ansible.builtin.set_fact:
         svm_deletion_required: "{{ svm_to_delete_id != '' and svm_to_delete_id is defined }}"
-        svm_deletion_complete: "{{ (svm_to_delete_id == '' or svm_to_delete_id is not defined) or (svm_delete_status is defined and (svm_delete_status.rc != 0 or svm_delete_status.stdout == 'DELETED')) }}"
+        svm_deletion_complete: "{{ (svm_to_delete_id == ''
+          or svm_to_delete_id is not defined)
+          or (svm_delete_status is defined
+          and (svm_delete_status.rc != 0
+          or svm_delete_status.stdout == 'DELETED')) }}"
 
     - name: Fail if SVM exists and wasn't deleted
-      fail:
+      ansible.builtin.fail:
         msg: >
           Cannot delete FSx filesystem {{ fsx_to_delete_id }} because SVM {{ svm_to_delete_id }} still exists.
           The SVM must be deleted first. Please delete the SVM manually or check why the SVM deletion failed.

@@ -6,7 +6,6 @@ collections:
   - name: community.aws
 
   - name: kubernetes.core
-
 # Note: This playbook uses AWS CLI for FSx operations.
 # Ensure AWS CLI is installed and configured with appropriate credentials:
 #   pip install awscli
